@@ -16,38 +16,46 @@ const (
 
 type User struct {
 	gorm.Model
-	Name        string
-	Username    string
-	Password    string
-	DateofBirth time.Time
-	Topics      []Topic
-	Answers     []Answer
-	Comments    []Comment
+	Name        string    `gorm:"not null"`
+	Username    string    `gorm:"not null"`
+	Password    string    `gorm:"not null"`
+	DateofBirth time.Time `gorm:"not null"`
+	Topics      []*Topic
+	Answers     []*Answer
+	Comments    []*Comment
 }
 
 type Topic struct {
 	gorm.Model
-	Title     string
-	Body      string
-	UpVotes   uint
-	DownVotes uint
+	Title     string `gorm:"not null"`
+	Body      string `gorm:"not null"`
+	UpVotes   uint   `gorm:"not null;default: 0"`
+	DownVotes uint   `gorm:"not null;default: 0"`
 	Status    status `gorm:"default:'PUBLIC';type:ENUM('PUBLIC', 'PROTECTED', 'PRIVATE');column:status"`
-	UserID    uint
+	Comments  []*Comment
+	Answers   []*Answer
+	UserID    uint `gorm:"not null"`
 }
 
 type Answer struct {
 	gorm.Model
-	Body      string
-	UpVotes   uint
-	DownVotes uint
-	UserID    uint
+	Body      string `gorm:"not null"`
+	UpVotes   uint   `gorm:"not null;default: 0"`
+	DownVotes uint   `gorm:"not null;default: 0"`
+	Comments  []*Comment
+	UserID    uint `gorm:"not null"`
 	TopicID   uint
 }
 
 type Comment struct {
 	gorm.Model
-	Body     string
-	UserID   uint
-	TopicID  uint
-	AnswerID uint `gorm:"default:null"`
+	Body     string `gorm:"not null"`
+	UserID   uint   `gorm:"not null"`
+	TopicID  uint   `gorm:"not null"`
+	AnswerID uint
+}
+
+type Invited struct {
+	UserID   uint `gorm:"primaryKey;autoIncrement:false"`
+	AnswerID uint `gorm:"primaryKey;autoIncrement:false"`
 }
