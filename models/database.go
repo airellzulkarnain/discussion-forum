@@ -20,6 +20,7 @@ func MigrateDB(db *gorm.DB) {
 			Name:        "admin",
 			Username:    "admin",
 			Password:    "admin",
+			Active:      true,
 			DateofBirth: time.Now(),
 		})
 	}

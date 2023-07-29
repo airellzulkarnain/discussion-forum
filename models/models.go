@@ -16,10 +16,11 @@ const (
 
 type User struct {
 	gorm.Model
-	Name        string    `gorm:"not null"`
-	Username    string    `gorm:"not null"`
-	Password    string    `gorm:"not null"`
-	DateofBirth time.Time `gorm:"not null"`
+	Name        string    `gorm:"not null" json:"name"`
+	Username    string    `gorm:"not null;unique" json:"username"`
+	Password    string    `gorm:"not null" json:"password"`
+	DateofBirth time.Time `gorm:"not null" json:"date_of_birth"`
+	Active      bool      `gorm:"default: false;not null"`
 	Topics      []*Topic
 	Answers     []*Answer
 	Comments    []*Comment
