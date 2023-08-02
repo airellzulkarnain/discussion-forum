@@ -9,14 +9,12 @@ import (
 	"github.com/airellzulkarnain/discussion-forum/models"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
+	"gorm.io/gorm"
 )
 
 func SignIn(c *gin.Context) {
-	db, err := models.ConnectDB()
+	db := c.MustGet("db").(*gorm.DB)
 
-	if err != nil {
-		panic("Failed to connect to database")
-	}
 	var user models.User
 	if err := c.ShouldBindJSON(&user); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -28,7 +26,7 @@ func SignIn(c *gin.Context) {
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"id":  user.ID,
-		"exp": time.Now().Add(time.Hour * 24).Unix(),
+		"exp": time.Now().Add(time.Minute * 1).Unix(),
 	})
 	secret, err := os.ReadFile(filepath.Join(".", "jwtRS256.key.pub"))
 	if err != nil {

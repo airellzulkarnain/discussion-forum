@@ -6,11 +6,24 @@ import (
 	"time"
 
 	"gorm.io/driver/mysql"
+	"gorm.io/driver/sqlite"
 )
 
-func ConnectDB() (*gorm.DB, error) {
-	database, err := gorm.Open(mysql.Open("discus:discussion-forum@tcp(127.0.0.1:3306)/discus_forum_db?charset=utf8mb4&parseTime=True&loc=Local"), &gorm.Config{})
-	return database, err
+func ConnectDB(test_db bool) *gorm.DB {
+	var (
+		database *gorm.DB
+		err      error
+	)
+	if !test_db {
+		database, err = gorm.Open(mysql.Open("discus:discussion-forum@tcp(127.0.0.1:3306)/discus_forum_db?charset=utf8mb4&parseTime=True&loc=Local"), &gorm.Config{})
+	} else {
+		database, err = gorm.Open(sqlite.Open(":memory:"), &gorm.Config{})
+		database.Exec("PRAGMA foreign_keys = ON")
+	}
+	if err != nil {
+		panic(err)
+	}
+	return database
 }
 
 func MigrateDB(db *gorm.DB) {

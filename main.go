@@ -11,20 +11,24 @@ import (
 
 func main() {
 	if len(os.Args) > 1 && os.Args[1] == "migrate" {
-		db, err := models.ConnectDB()
-		if err != nil {
-			panic("Failed to connect to database")
-		}
+		db := models.ConnectDB(false)
 		models.MigrateDB(db)
 	} else {
 		gin.SetMode(gin.DebugMode)
 		r := setupRouter()
+
+		r.Use(func(c *gin.Context) {
+			c.Set("db", models.ConnectDB(false))
+			c.Next()
+		})
+
 		r.Run(":8080")
 	}
 }
 
 func setupRouter() *gin.Engine {
 	r := gin.Default()
+
 	public := r.Group("/api/v1")
 	admin := r.Group("/api/v1/admin")
 	user := r.Group("/api/v1")
