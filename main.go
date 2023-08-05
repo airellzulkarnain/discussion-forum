@@ -15,19 +15,19 @@ func main() {
 		models.MigrateDB(db)
 	} else {
 		gin.SetMode(gin.DebugMode)
-		r := setupRouter()
-
-		r.Use(func(c *gin.Context) {
-			c.Set("db", models.ConnectDB(false))
-			c.Next()
-		})
+		r := setupRouter(false)
 
 		r.Run(":8080")
 	}
 }
 
-func setupRouter() *gin.Engine {
+func setupRouter(test bool) *gin.Engine {
 	r := gin.Default()
+
+	r.Use(func(c *gin.Context) {
+		c.Set("db", models.ConnectDB(test))
+		c.Next()
+	})
 
 	public := r.Group("/api/v1")
 	admin := r.Group("/api/v1/admin")
@@ -41,6 +41,13 @@ func setupRouter() *gin.Engine {
 		public.GET("/topics", controllers.SearchTopics)
 		public.POST("/signin", controllers.SignIn)
 		public.POST("/signup", controllers.SignUp)
+	}
+
+	{
+		user.POST("/topics", controllers.CreateTopic)
+		user.GET("/topics/:id", controllers.RetrieveTopic)
+		user.PUT("/topics/:id", controllers.UpdateTopic)
+		user.DELETE("/topics/:id", controllers.DeleteTopic)
 	}
 
 	{

@@ -28,11 +28,11 @@ type User struct {
 
 type Topic struct {
 	gorm.Model
-	Title     string `gorm:"not null"`
-	Body      string `gorm:"not null"`
+	Title     string `gorm:"not null" json:"title"`
+	Body      string `gorm:"not null" json:"body"`
 	UpVotes   uint   `gorm:"not null;default: 0"`
 	DownVotes uint   `gorm:"not null;default: 0"`
-	Status    status `gorm:"default:'PUBLIC';type:ENUM('PUBLIC', 'PROTECTED', 'PRIVATE');column:status"`
+	Status    status `gorm:"default:'PUBLIC';type:ENUM('PUBLIC', 'PROTECTED', 'PRIVATE');column:status" json:"status"`
 	Comments  []*Comment
 	Answers   []*Answer
 	UserID    uint `gorm:"not null"`

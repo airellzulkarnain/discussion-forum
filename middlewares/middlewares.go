@@ -22,8 +22,8 @@ func UserAuth() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-		if Claims["role"] == "users" || Claims["role"] == "admin" {
-			c.Header("X-UserId", Claims["id"].(string))
+		if Claims["role"].(string) == "users" || Claims["role"].(string) == "admin" {
+			c.Set("userId", uint(Claims["id"].(float64)))
 			c.Next()
 			return
 		}
@@ -38,8 +38,8 @@ func AdminAuth() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-		if Claims["role"] == "admin" {
-			c.Header("X-UserId", Claims["id"].(string))
+		if Claims["role"].(string) == "admin" {
+			c.Set("userId", uint(Claims["id"].(float64)))
 			c.Next()
 			return
 		}
@@ -58,7 +58,7 @@ func extractJWTPayloads(jwt_token string) interface{} {
 	}
 
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		if _, ok := token.Method.(*jwt.SigningMethodRSA); !ok {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, jwt.ErrSignatureInvalid
 		}
 		return secret_key, nil
