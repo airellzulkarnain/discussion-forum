@@ -45,9 +45,23 @@ func setupRouter(test bool) *gin.Engine {
 
 	{
 		user.POST("/topics", controllers.CreateTopic)
-		user.GET("/topics/:id", controllers.RetrieveTopic)
 		user.PUT("/topics/:id", controllers.UpdateTopic)
 		user.DELETE("/topics/:id", controllers.DeleteTopic)
+		user.PUT("/topics/:id/up", controllers.UpVoteTopic)
+		user.PUT("/topics/:id/down", controllers.DownVoteTopic)
+
+		user.POST("/answers", controllers.CreateAnswer)
+		user.PUT("/answers/:id", controllers.UpdateAnswer)
+		user.DELETE("/answers/:id", controllers.DeleteAnswer)
+		user.PUT("/answers/:id/up", controllers.UpVoteAnswer)
+		user.PUT("/answers/:id/down", controllers.DownVoteAnswer)
+
+		user.POST("/comments", controllers.CreateComment)
+		user.PUT("/comments/:id", controllers.UpdateComment)
+		user.DELETE("/comments/:id", controllers.DeleteComment)
+
+		user.PUT("/users/:id", controllers.UpdateUser)
+		user.DELETE("/users/:id", controllers.DeleteUser)
 	}
 
 	{

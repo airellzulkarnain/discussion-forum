@@ -11,7 +11,6 @@ import (
 	"time"
 
 	"github.com/airellzulkarnain/discussion-forum/models"
-
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 )
@@ -74,7 +73,7 @@ func TestCreateTopic(t *testing.T) {
 		"/api/v1/topics",
 		bytes.NewBuffer([]byte(`{
 		"title": "title", 
-		"description": "description", 
+		"body": "body", 
 		"status": "public"
 	}`)))
 	r.Header.Set("Authorization", "Bearer "+token)
@@ -94,16 +93,8 @@ func TestUpdateTopic(t *testing.T) {
 	r, _ := http.NewRequest("PUT", "/api/v1/topics/1", bytes.NewBuffer([]byte(`{
 		"title": "title", 
 		"description": "description", 
-		"status": ("private", "protected", "public")
+		"status": "protected"
 	}`)))
-	r.Header.Set("Authorization", "Bearer "+token)
-	router.ServeHTTP(w, r)
-	assert.Equal(t, http.StatusNoContent, w.Code)
-	assert.Equal(t, "", w.Body.String())
-}
-func TestDeleteTopic(t *testing.T) {
-	w := httptest.NewRecorder()
-	r, _ := http.NewRequest("DELETE", "/api/v1/topics/1", nil)
 	r.Header.Set("Authorization", "Bearer "+token)
 	router.ServeHTTP(w, r)
 	assert.Equal(t, http.StatusNoContent, w.Code)
@@ -113,7 +104,7 @@ func TestDeleteTopic(t *testing.T) {
 func TestCreateAnswer(t *testing.T) {
 	w := httptest.NewRecorder()
 	r, _ := http.NewRequest("POST", "/api/v1/answers", bytes.NewBuffer([]byte(`{
-		"topicId": 0, 
+		"topic_id": 1, 
 		"body": "text"
 	}`)))
 	r.Header.Set("Authorization", "Bearer "+token)
@@ -124,16 +115,8 @@ func TestCreateAnswer(t *testing.T) {
 func TestUpdateAnswer(t *testing.T) {
 	w := httptest.NewRecorder()
 	r, _ := http.NewRequest("PUT", "/api/v1/answers/1", bytes.NewBuffer([]byte(`{
-		"body": "text"
+		"body": "text2"
 	}`)))
-	r.Header.Set("Authorization", "Bearer "+token)
-	router.ServeHTTP(w, r)
-	assert.Equal(t, http.StatusNoContent, w.Code)
-	assert.Equal(t, "", w.Body.String())
-}
-func TestDeleteAnswer(t *testing.T) {
-	w := httptest.NewRecorder()
-	r, _ := http.NewRequest("DELETE", "/api/v1/answers/1", nil)
 	r.Header.Set("Authorization", "Bearer "+token)
 	router.ServeHTTP(w, r)
 	assert.Equal(t, http.StatusNoContent, w.Code)
@@ -162,14 +145,6 @@ func TestUpdateComment(t *testing.T) {
 	assert.Equal(t, http.StatusNoContent, w.Code)
 	assert.Equal(t, "", w.Body.String())
 }
-func TestDeleteComment(t *testing.T) {
-	w := httptest.NewRecorder()
-	r, _ := http.NewRequest("DELETE", "/api/v1/comments/1", nil)
-	r.Header.Set("Authorization", "Bearer "+token)
-	router.ServeHTTP(w, r)
-	assert.Equal(t, http.StatusNoContent, w.Code)
-	assert.Equal(t, "", w.Body.String())
-}
 
 func TestUpdateUser(t *testing.T) {
 	w := httptest.NewRecorder()
@@ -179,14 +154,6 @@ func TestUpdateUser(t *testing.T) {
 		"username": "username", 
 		"password": "password"
 	}`)))
-	r.Header.Set("Authorization", "Bearer "+token)
-	router.ServeHTTP(w, r)
-	assert.Equal(t, http.StatusNoContent, w.Code)
-	assert.Equal(t, "", w.Body.String())
-}
-func TestDeleteUser(t *testing.T) {
-	w := httptest.NewRecorder()
-	r, _ := http.NewRequest("DELETE", "/api/v1/users/1", nil)
 	r.Header.Set("Authorization", "Bearer "+token)
 	router.ServeHTTP(w, r)
 	assert.Equal(t, http.StatusNoContent, w.Code)
@@ -254,6 +221,42 @@ func TestInviteUser(t *testing.T) {
 	r.Header.Set("Authorization", "Bearer "+token)
 	router.ServeHTTP(w, r)
 	assert.Equal(t, http.StatusNoContent, w.Code)
+}
+
+func TestDeleteComment(t *testing.T) {
+	w := httptest.NewRecorder()
+	r, _ := http.NewRequest("DELETE", "/api/v1/comments/1", nil)
+	r.Header.Set("Authorization", "Bearer "+token)
+	router.ServeHTTP(w, r)
+	assert.Equal(t, http.StatusNoContent, w.Code)
+	assert.Equal(t, "", w.Body.String())
+}
+
+func TestDeleteAnswer(t *testing.T) {
+	w := httptest.NewRecorder()
+	r, _ := http.NewRequest("DELETE", "/api/v1/answers/1", nil)
+	r.Header.Set("Authorization", "Bearer "+token)
+	router.ServeHTTP(w, r)
+	assert.Equal(t, http.StatusNoContent, w.Code)
+	assert.Equal(t, "", w.Body.String())
+}
+
+func TestDeleteTopic(t *testing.T) {
+	w := httptest.NewRecorder()
+	r, _ := http.NewRequest("DELETE", "/api/v1/topics/1", nil)
+	r.Header.Set("Authorization", "Bearer "+token)
+	router.ServeHTTP(w, r)
+	assert.Equal(t, http.StatusNoContent, w.Code)
+	assert.Equal(t, "", w.Body.String())
+}
+
+func TestDeleteUser(t *testing.T) {
+	w := httptest.NewRecorder()
+	r, _ := http.NewRequest("DELETE", "/api/v1/users/1", nil)
+	r.Header.Set("Authorization", "Bearer "+token)
+	router.ServeHTTP(w, r)
+	assert.Equal(t, http.StatusNoContent, w.Code)
+	assert.Equal(t, "", w.Body.String())
 }
 
 func TestMain(m *testing.M) {

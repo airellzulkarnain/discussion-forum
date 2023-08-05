@@ -40,12 +40,12 @@ type Topic struct {
 
 type Answer struct {
 	gorm.Model
-	Body      string `gorm:"not null"`
+	Body      string `gorm:"not null" json:"body"`
 	UpVotes   uint   `gorm:"not null;default: 0"`
 	DownVotes uint   `gorm:"not null;default: 0"`
 	Comments  []*Comment
 	UserID    uint `gorm:"not null"`
-	TopicID   uint
+	TopicID   uint `gorm:"<-:create" json:"topic_id"`
 }
 
 type Comment struct {
